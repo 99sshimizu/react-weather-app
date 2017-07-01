@@ -1,0 +1,20 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #286090;
+  margin-bottom: 20px;
+  height: 100px;
+  padding: 20px;
+  color: white;
+}
+
+.card {
+  margin: 10px 0;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.footer {
+  margin-top: 20px;
+}
