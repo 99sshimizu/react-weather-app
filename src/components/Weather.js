@@ -12,15 +12,15 @@ class Weather extends Component {
   }
 
   componentWillMount() {
-    this.getWeather('conditions', 'autoip');
+    this.getWeather('autoip');
   }
 
-  getWeather(feature, q) {
+  getWeather(query) {
     this.setState({
       error: null,
       loaded: false
     });
-    weatherApi(feature, q)
+    weatherApi(query)
       .then(response => {
         if (response.response.error) {
           this.setState({
@@ -32,7 +32,8 @@ class Weather extends Component {
             temp: current.temperature_string,
             location: current.display_location.full,
             icon_url: current.icon_url,
-            time: new Date(current.observation_epoch * 1000).toLocaleString(),
+            time: current.observation_time,
+            forcast: response.forecast.simpleforecast.forecastday
           });
         }
         this.setState({ loaded: true });
@@ -64,7 +65,7 @@ class Weather extends Component {
           <button
             type="submit"
             className="btn btn-primary"
-            onClick={() => this.getWeather('conditions', this.state.zipcode)}>
+            onClick={() => this.getWeather(this.state.zipcode)}>
             Submit
           </button>
         </div>
@@ -91,6 +92,32 @@ class Weather extends Component {
     )
   }
 
+  renderForcast() {
+    const forcasts = this.state.forcast;
+    return (
+      <div className="row">
+        {
+          forcasts.map(forcast => {
+            return (
+              <div className="col-md-3" key={forcast.period}>
+                <div className="card">
+                  <div className="card-block">
+                    <p className="card-text">
+                      {forcast.date.weekday} {forcast.date.monthname} {forcast.date.day}<br />
+                      <img src={forcast.icon_url} alt="weather" />
+                    </p>
+                    <h4>High: {forcast.high.fahrenheit} ({forcast.high.celsius})&deg;</h4>
+                    <h4>Low: {forcast.low.fahrenheit} ({forcast.low.celsius})&deg;</h4>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        }
+      </div>
+    )
+  }
+
   render() {
     if (this.state.loaded) {
       return (
@@ -98,6 +125,7 @@ class Weather extends Component {
           {this.renderError()}
           {this.renderForm()}
           {this.renderWeather()}
+          {this.renderForcast()}
         </div>
       )
     } else {
